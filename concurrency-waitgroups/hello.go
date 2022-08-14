@@ -1,4 +1,4 @@
-// Multiprocessing in go
+// Multiprocessing in go using waitgroups
 
 package main
 
@@ -10,7 +10,7 @@ import (
 
 func main() {
 	var wg sync.WaitGroup
-	wg.Add(1)
+	wg.Add(2)
 
 	// gorouting anonymous function, declare and directly run
 	go func() {
@@ -18,7 +18,12 @@ func main() {
 		wg.Done()
 	}()
 
-	// working with channels
+	go func() {
+		count("goat")
+		wg.Done()
+	}()
+
+	// wait till Wgs gets finished
 
 	wg.Wait()
 }
@@ -26,14 +31,6 @@ func main() {
 func count(name string) {
 	for i := 1; i <= 5; i++ {
 		fmt.Println(i, name)
-		time.Sleep(time.Millisecond * 500)
-	}
-}
-
-func channelCount(name string, c chan string) {
-	for i := 1; i <= 5; i++ {
-		// instead of printing on console, we're feeding to a channel here
-		c <- name
 		time.Sleep(time.Millisecond * 500)
 	}
 }
